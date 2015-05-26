@@ -1,5 +1,7 @@
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
 <title></title>
 <script src="./js2.js" charset="UTF-8"></script>
 </head>
@@ -8,7 +10,12 @@
 <script type="text/javascript">
     document.write("Welcom to Smart!!")
 </script>
-<input type="button" value="OK" onclick="printMsg()">
+
+<form name="myform1">
+<input type="button" value="OK" onclick="printMsg()"><BR>
+<input type="button" value="変更" onclick="changeMsg()"><BR>
+<input type="text" name="mytext1" value="TEST"><BR>
+</form>
 
 </body>
 </html>
