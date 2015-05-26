@@ -25,3 +25,13 @@ function changeMsg( _count ) {
 
     return _count;
 }
+function validate( _obj ){
+    var _val = _obj.getElementsByTagName("input")[0].value;
+    if( _val.match(/^[0-9]+$/)){
+        _obj.getElementsByTagName("div")[0].innerHTML = "";
+        _obj.getElementsByTagName("input")[0].style.backgroundColor = 'white';
+    }else{
+        _obj.getElementsByTagName("div")[0].innerHTML = "<font color=\"red\">入力エラーです</font>";
+        _obj.getElementsByTagName("input")[0].style.backgroundColor = 'red';
+    }
+}
