@@ -1,0 +1,169 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script type="text/javascript">
+$(function() {
+    // 属性の取得
+    var _attr = $('#a #i').attr('src');
+    var _attr_alt = $('#a #i').attr('alt');
+
+    // 属性を表示
+    $('#a #text').text(_attr);
+    $('#a #text2').text(_attr_alt);
+
+    // 属性を設定
+    $('#a #link').attr('href', _attr);
+
+    // 属性を削除
+    $('#a #link2').removeAttr('href');
+
+    // HTMLを追加
+    var _html = '<a href="' + _attr + '" alt="' + _attr_alt + '">リンクのhtml記述を追加</a><BR><BR>';
+   $('#a #html').html(_html);
+
+     // Formの値 取得と設定
+    var _text = $('#b #text1').val();
+    $('#b #text2').val(_text);
+
+    // 新しいコンテンツを追加する
+    $('<td>c</td><td>d</td>').appendTo('#c #tab #tr1');   // trの子要素tdの末尾に追加
+    $('<td>e</td><td>f</td>').prependTo('#c #tab #tr1');  // trの子要素tdの先頭に追加
+    $('<tr><td>g</td><td>h</td></tr>').insertAfter('#c #tab #tr1');   // trの後ろに追加
+    $('<tr><td>i</td><td>j</td></tr>').insertBefore('#c #tab #tr1');  // trの前に追加
+
+    // その他
+    $('#f #h3').remove();  // 要素を削除
+    $('#f #h1').replaceWith('<h4">置きかられた後</h4>');   // 置換
+    $('#f #h5').wrap('<font color="red"></font>');  // ラップ
+
+    
+
+})
+</script>
+<body>
+
+<div id="a">
+<div id="text"></div>
+<div id="text2"></div>
+<a id="link">リンク属性が追加されたリンク</a><BR>
+<a id="link2" href="http://www.htmq.com/index.htm">削除されたリンク</a><BR>
+<img id="i" src="http://www.htmq.com/images/logo.gif" alt="取得されたalt属性" ><BR>
+<div id="html"></div>
+</div>
+
+
+<div id="b">
+<form>
+    <input id="text1" type="text" name="text_name1" value="ここの文字を次のテキストボックスに追加します"><BR>
+    <input id="text2" type="text" name="text_name2" value=""><BR>
+    <select id="select" name="select_name" >
+        <option value="あ">あ</option>
+        <option value="い">い</option>
+        <option value="う">う</option>
+    </select>
+</form>
+</div>
+
+<div id="c">
+<table id="tab" border=1>
+<tr id="tr1"><td>a</td><td>b</td></tr>
+</table>
+</div>
+
+<div id="f">
+----<BR>
+<h1 id="h0">置き換えられる前</h1>
+↓<BR>
+<h1 id="h1">置き換えられる前</h1>
+<BR>----<BR>
+<h1 id="h2">消される前</h1>
+↓<BR>
+<h1 id="h3">消された後</h1>
+<BR>----<BR>
+<h1 id="h4">ラップされた文字(前)</h1>
+↓<BR>
+<h1 id="h5">ラップされた文字(後)</h1>
+<BR>----<BR>
+
+<BR>
+<BR>
+<BR>
+
+
+
+
+
+<textarea rows="100" cols="100">
+<html>
+<head>
+<meta charset="UTF-8">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script type="text/javascript">
+$(function() {
+    // 属性の取得
+    var _attr = $('#a #i').attr('src');
+    var _attr_alt = $('#a #i').attr('alt');
+
+    // 属性を表示
+    $('#a #text').text(_attr);
+    $('#a #text2').text(_attr_alt);
+
+    // 属性を設定
+    $('#a #link').attr('href', _attr);
+
+    // 属性を削除
+    $('#a #link2').removeAttr('href');
+
+    // HTMLを追加
+    var _html = '<a href="' + _attr + '" alt="' + _attr_alt + '">リンクのhtml記述を追加</a><BR><BR>';
+    $('#a #html').html(_html);
+
+    // Formの値 取得と設定
+    var _text = $('#b #text1').val();
+    $('#b #text2').val(_text);
+
+    // 新しいコンテンツを追加する
+    $('<td>c</td><td>d</td>').appendTo('#c #tab #tr1');   // trの子要素tdの末尾に追加
+    $('<td>e</td><td>f</td>').prependTo('#c #tab #tr1');  // trの子要素tdの先頭に追加
+    $('<tr><td>g</td><td>h</td></tr>').insertAfter('#c #tab #tr1');   // trの後ろに追加
+    $('<tr><td>i</td><td>j</td></tr>').insertBefore('#c #tab #tr1');  // trの
+    
+})
+</script>
+<body>
+
+<div id="a">
+<div id="text"></div>
+<div id="text2"></div>
+<a id="link">リンク属性が追加されたリンク</a><BR>
+<a id="link2" href="http://www.htmq.com/index.htm">削除されたリンク</a>
+<img id="i" src="http://www.htmq.com/images/logo.gif" alt="取得されたalt属性" ><BR>
+<div id="html"></div>
+</div>
+
+<div id="b">
+<form>
+<input id="text1" type="text" name="text_name1" value="aaaaa">
+<input id="text2" type="text" name="text_name2" value="">
+<select id="select" name="select_name" >
+    <option value="あ">あ</option>
+    <option value="い">い</option>
+    <option value="う">う</option>
+</select>
+</form>
+</div>
+
+<div id="c">
+<table id="tab" border=1>
+<tr id="tr1"><td>a</td><td>b</td></tr>
+</table>
+</div>
+
+
+</body>
+</html>
+</textarea>
+
+</body>
+</html>
