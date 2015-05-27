@@ -1,0 +1,90 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script type="text/javascript">
+    window.alert($.fn.jquery);
+    $(document).ready(function(){
+        alert("jQueryファイルの読み込み完了でーす。");
+    });
+
+$(function() {
+    $('#a h2').css('color', 'red');
+    $('#a #h3').css('color', 'blue');
+    $('#a ,h4').css('color', 'green');
+    $('#b h2').css('color', 'yellow');
+    $('#c td:contains("b")').css('background-color', 'yellow');
+    });
+
+</script>
+<body>
+
+<div id="a">
+<h2>h2タグ指定</h2>
+<h3 id="h3">id指定</h3>
+<h4 class="h4">class指定</h4>
+</div>
+
+<div id="b">
+<h2>div id=b</h2>
+</div>
+
+<div id="c">
+<table>
+<tr>
+<td id="a">a</td>
+<td id="ab">ab</td>
+<td id="ba">acc</td>
+<td id="bac">bac</td>
+</tr>
+</table>
+</div>
+
+
+
+<textarea rows="40" cols="100">
+<html>
+<head>
+<meta charset="UTF-8">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script type="text/javascript">
+    window.alert($.fn.jquery);
+    $(document).ready(function(){
+        alert("jQueryファイルの読み込み完了でーす。");
+    });
+
+$(function() {
+    $('#a h2').css('color', 'red');
+    $('#a #h3').css('color', 'blue');
+    $('#a ,h4').css('color', 'green');
+    $('#b h2').css('color', 'yellow');
+    $('#c td:contains("a")').css('bordercolor', 'blue');
+    });
+
+</script>
+<body>
+
+<div id="a">
+<h2>h2タグ指定</h2>
+<h3 id="h3">id指定</h3>
+<h4 class="h4">class指定</h4>
+</div>
+
+<div id="b">
+<h2>div id=b</h2>
+</div>
+
+<div id="c">
+<table>
+<tr>
+<td id="a">a</td>
+<td id="ab">ab</td>
+<td id="ba">ba</td>
+<td id="bac">bac</td>
+</tr>
+</table>
+</div>
+
+</textarea>
+
+</html>
