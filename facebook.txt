@@ -1,0 +1,29 @@
+https://www.facebook.com/v2.2/dialog/oauth?response_type=code&client_id=201249133308762&scope=user_friends&redirect_uri=https%3A%2F%2Faccountlink.yahoo.co.jp%2Fcallback%2Fd56f52a0-62c8-11e1-91dc-0050560ef3ca%2F&state=dD1yYS5jVkImc2s9dWh3RU1VT2trT2JXekhOZm13R19KWkVqeUpVLQ%3D%3D
+
+facebook sdk
+・使うにはDevloper Networkに登録。
+  登録には電話番号が必須。もしくはクレカ
+・facebook に連携認証する。（Oauthの仕組み）
+
+（使い方）
+・userID(利用者ID）とシークレットキーの組み合わせでfacebookページの認証画面にリダイレクト
+・リダイレクトさせて、そこで認証した後に元のページに戻ってくる。
+https://www.facebook.com/dialog/oauth?client_id=App_ID&redirect_uri=http://hogehoge.com/&scope=manage_pages,publish_actions,offline_access
+　→code=XXXXが取得j
+
+https://graph.facebook.com/oauth/access_token?client_id=App_ID&redirect_uri=http://hogehoge.com/&client_secret=SECRET_KEY&code=XXXX
+　→access_token=YYYYが取得
+
+・戻ってきた後にAccessTokenを使って、ログインユーザの名前や友達などの情報をfacebookのAPIから取得する。
+https://graph.facebook.com/me/accounts?access_token=YYYY
+
+・SDKの中でaccess_tokenやら何やらUserの情報をCookieに保存したり取り出したりして、APIにアクセスしている
+
+v4.0 autoload　　　　　https://github.com/facebook/facebook-php-sdk-v4
+v3.0 require_once　　　https://github.com/facebookarchive/facebook-php-sdk
+V2.0 2015/04 で使えなくなった
+
+
+http://192.168.11.109/html/facebook/facebook-php-sdk/examples/example.php
+
+
