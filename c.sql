@@ -16,3 +16,5 @@ from   emp e1
        left outer join dept d2 
        on e1.DEP = d2.dep
 
+
+    aaaa
