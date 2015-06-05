@@ -1,0 +1,31 @@
+http://www.shift-the-oracle.com/sql/explain-plan.html
+
+SET LINESIZE 2000
+SET PAGES 0
+SET AUTOTRACE TRACEONLY
+
+COLUMN plan_plus_exp FORMAT a60
+
+CREATE VIEW PLAN AS 
+SELECT PLAN_TABLE_OUTPUT FROM TABLE(DBMS_XPLAN.DISPLAY('PLAN_TABLE',NULL,'SERIAL'));
+
+explain plan for
+
+
+ select e1.emp_name,
+       d2.dept_name, 
+    e3.emp_name as manage, 
+    e3.dept_name
+from   emp e1 
+  left outer join ( 
+   select e2.emp_id, 
+       e2.emp_name, 
+       d.dep, 
+          d.dept_name 
+   from   emp e2 left outer join dept d 
+      on     e2.dep = d.dep 
+  ) e3 
+  on e1.manager = e3.EMP_ID 
+left outer join dept d2 on e1.DEP = d2.dep
+
+
