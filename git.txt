@@ -1,0 +1,756 @@
+-----------------------------
+-- git 設定
+-----------------------------
+$ git config --global "knishita@centos6.localhost"
+$ git config --global "hiroton9@gmail.com"
+$ cat ~/.gitconfig
+[user]
+    name = knishita@centos6.localhost
+    email = hiroton9@gmail.com
+
+-----------------------------
+-- git 取得
+-----------------------------
+ git clone git@github.com:hiroton9/test2.git
+
+-----------------------------
+-- ファイル追加
+-----------------------------
+git add README.md
+git commit -m "first commit"
+git push origin master
+
+-----------------------------
+-- ファイルの戻し
+-----------------------------
+http://qiita.com/ongaeshi/items/6305e5c2fde5719c50a8
+
+
+--------------------------------------------------------------------------------------------------------------------
+
+ブランチ作成とか
+
+--------------------------------------------------------------------------------------------------------------------
+$ git branch
+* master
+
+$ git branch new_branch1
+$ git branch
+* master
+  new_branch1
+
+-----------------------------
+-- ブランチ切り替え
+-----------------------------
+$ git checkout new_branch1
+Switched to branch 'new_branch1'
+
+-- ファイルを追加する。
+$ vim add_file.txt
+***ここでmasterにチェックアウトすると追加したファイルが付いてくる***
+
+-- new_branch1に戻ってfile2をadd
+git checkout new_branch1
+git add add_file2.txt
+$ git checkout master
+M    README.md
+A    add_file2.txt
+***ここでmasterにチェックアウトすると追加したファイルが付いてくる***
+
+--  new_branch1に戻ってfile2をaddをコミット
+$ git commit -m "new_branch に add_file2を追加"
+
+git checkout master
+ ll
+合計 16
+drwxrwxr-x. 7 knishita knishita 4096  5月 15 19:35 2015 ..
+-rw-rw-r--. 1 knishita knishita   33  5月 15 19:49 2015 README.md
+drwxr-xr-x. 3 knishita knishita 4096  5月 15 19:56 2015 .
+drwxrwxr-x. 8 knishita knishita 4096  5月 15 19:56 2015 .git
+
+***ここでmasterにチェックアウトすると追加したファイルが付いてこない***
+
+**********************************************************************************************************************
+修正の場合も同じ考え方で、commitしない限り切り替えると修正が付いてくる。
+コミットするとそのブランチ内のものになる。
+コミットログとかもついてこないようになる。
+
+commitしたものを改めてmasterに取り組むには merge コマンドを利用する
+$ git checkout master
+$ git merge new_branch1
+Updating 55fb28a..5d48ea1
+Fast-forward
+ README.md     |    5 ++++-
+ add_file.txt  |    2 ++
+ add_file2.txt |    3 +++
+ 3 files changed, 9 insertions(+), 1 deletions(-)
+ create mode 100644 add_file.txt
+ create mode 100644 add_file2.txt
+
+**********************************************************************************************************************
+
+-----------------------------
+-- 作成したブランチをpush
+-----------------------------
+$ git branch -a
+  master
+* new_branch1
+  remotes/origin/master
+
+$ git push origin new_branch1
+
+To git@github.com:hiroton9/test2.git
+ * [new branch]      new_branch1 -> new_branch1
+
+ここで改めてgithubを見ると・・・
+https://github.com/hiroton9/test2
+
+new_branch1がブランチが作成されていて、masterにmergeするための下記の内容が表示されている
+---------------------------------------------
+Your recently pushed branches:
+new_branch1 (less than a minute ago) [Compare & pull request]
+---------------------------------------------
+
+
+ここで、ディレクトリを変えて「test2」レポジトリをcloneしてみると、しっかり新規ブランチも取得できている
+
+$  mkdir test2_2
+$  cd test2_2/
+$  git clone git@github.com:hiroton9/test2.git
+$  cd test2
+$  git branch -a
+* master
+  remotes/origin/HEAD -> origin/master
+  remotes/origin/master
+  remotes/origin/new_branch1
+
+
+--------------------------------------------------------------------------------------------------------------------
+
+ブランチのマージとか
+
+--------------------------------------------------------------------------------------------------------------------
+-----------------------------
+-- 新規ファイルを追加、既存ファイルを修正・削除して、それを別の人がマージする。
+-----------------------------
+$ git status
+#    new file:   add_file4.txt
+#    deleted:    add_file.txt
+#    modified:   add_file2.txt
+
+$ git commit -a -m "いろいろ修正しました"
+[new_branch1 8e547ed] いろいろ修正しました
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+ delete mode 100644 add_file.txt
+ create mode 100644 add_file4.txt
+
+$ git push origin new_branch1
+
+
+別の人がその結果をpull(fetch->merge)する。
+
+まずはリモートから取得する
+
+$ git fetch
+$ git branch -a
+  master
+* new_branch1
+  remotes/origin/master
+  remotes/origin/new_branch1
+
+取得したリモートとローカルの差異を確認する
+
+$ git diff remotes/origin/new_branch1
+
+diff --git a/add_file.txt b/add_file.txt
+new file mode 100644
+index 0000000..3e38a95
+--- /dev/null
++++ b/add_file.txt
+@@ -0,0 +1,2 @@
++ブランチに追加した
++ファイル
+
+問題なければマージする
+
+$ git merge remotes/origin/new_branch1
+
+Updating 44e298b..8e547ed
+Fast-forward
+ add_file.txt  |    2 --
+ add_file2.txt |    4 ++--
+ add_file4.txt |    2 ++
+
+
+-----------------------------
+-- mergeの取り消し！
+-----------------------------
+
+$ git revert 60c3272 -m 2
+
+ Revert "Merge remote branch 'remotes/origin/new_branch1' into new_branch1"
+ 5 files changed, 0 insertions(+), 12 deletions(-)
+ delete mode 100644 add_file3.1.txt
+ delete mode 100644 add_file5.txt
+ delete mode 100644 add_file6.2.txt
+ delete mode 100644 add_file6.3.txt
+ delete mode 100644 add_file6.txt
+ delete mode 100644 add_file7.txt
+[knishita@centos6 test2]$ git log --oneline
+
+
+-----------------------------
+-- ローカルの変更を取り消し！
+https://www.atlassian.com/ja/git/tutorial/undoing-changes#!reset
+-----------------------------
+$ git reflog
+7d0cdd5 HEAD@{0}: commit: Revert "Merge remote branch 'remotes/origin/new_branch1' into new_branch1"
+60c3272 HEAD@{1}: merge remotes/origin/new_branch1: Fast-forward
+8e547ed HEAD@{2}: checkout: moving from master to new_branch1
+
+
+$ git reset --hard HEAD~1　　　　　＜－－－－HEAD@{1}を実行後の時点まで戻るってこと！！！！！！
+HEAD is now at 60c3272 Merge remote branch 'remotes/origin/new_branch1' into new_branch1
+
+
+-----------------------------
+-- ブランチを２つ作成し、それをもう一つのブランチにマージリクエスト
+-----------------------------
+$ git branch -a
+  master
+* new_branch1
+  remotes/origin/HEAD -> origin/master
+  remotes/origin/master
+  remotes/origin/new_branch1
+  remotes/origin/new_branch2
+
+$ git checkout new_branch2
+
+Branch new_branch2 set up to track remote branch new_branch2 from origin.　　＜－－－－new_branch2のリモートブランチをトレース！
+Switched to a new branch 'new_branch2'
+
+-----------------------------
+不要になったブランチを削除する
+-----------------------------
+$ git branch -a
+  master
+  new_branch1
+* new_branch2
+  remotes/origin/HEAD -> origin/master
+  remotes/origin/master
+  remotes/origin/new_branch1
+  remotes/origin/new_branch2
+
+
+# remoteブランチを単純参照
+git remote show origin
+
+# remoteブランチでは削除されているが、ローカルに参照が残っているブランチを表示
+git remote prune --dry-run origin
+
+# すでに削除されているremoteブランチのローカル参照を削除してきれいにする
+git remote prune origin
+$ git branch -a
+  master
+  new_branch1
+* new_branch2
+  remotes/origin/HEAD -> origin/master
+  remotes/origin/master
+  remotes/origin/new_branch1
+  remotes/origin/new_branch2　　＜－－－－－－－－削除される
+
+
+$ git checkout master
+$ git branch -D new_branch2
+$ git branch -a
+* master
+  new_branch1
+  new_branch2　　　　　　　　　　＜－－－－－－－－削除される
+  remotes/origin/HEAD -> origin/master
+  remotes/origin/master
+  remotes/origin/new_branch1
+
+
+
+--------------------------------------------------------------------------------------------------------------------
+
+ローカルの変更
+
+--------------------------------------------------------------------------------------------------------------------
+-----------------------------
+-- ローカルの変更を取り消し！
+https://www.atlassian.com/ja/git/tutorial/undoing-changes#!reset
+-----------------------------
+$ git reflog
+7d0cdd5 HEAD@{0}: commit: Revert "Merge remote branch 'remotes/origin/new_branch1' into new_branch1"
+60c3272 HEAD@{1}: merge remotes/origin/new_branch1: Fast-forward
+8e547ed HEAD@{2}: checkout: moving from master to new_branch1
+
+
+$ git reset --hard HEAD~1　　　　　＜－－－－HEAD@{1}を実行後の時点まで戻るってこと！！！！！！
+HEAD is now at 60c3272 Merge remote branch 'remotes/origin/new_branch1' into new_branch1
+
+
+
+--------------------------------------------------------------------------------------------------------------------
+
+ログ関係とか
+http://transitive.info/article/git/command/log/
+
+--------------------------------------------------------------------------------------------------------------------
+-----------------------------
+-- ログの確認
+-----------------------------
+(ログ表示)
+git log
+git log -3
+
+(コミットログのみ1行で表示)
+git log --oneline
+
+(修正したファイル名を表示)
+git log --name-status
+
+(詳細)
+git log -p
+
+(ファイル指定)
+git log -p add_file2.txt
+
+-----------------------------
+-- 直前のcommitログの修正
+-----------------------------
+$ git commit --amend
+
+ 
+
+■コミットの取り消し
+http://d.hatena.ne.jp/mrgoofy33/20100910/1284069468
+http://d.hatena.ne.jp/murank/20110327/1301224770
+
+コミット自体を取り消しする(なかった事にする)には、「git reset」を使います。
+
+「git reset」には「git reset --soft」と「git reset --hard」の2種類があります。
+
+    「git reset --soft」 → ワークディレクトリの内容はそのままでコミットだけを取り消す。
+    「git reset --hard」 → コミット取り消した上でワークディレクトリの内容も書き換える。
+
+
+$ git reset --soft HEAD^
+
+
+■コミットログの統計
+
+$ git log --stat
+commit 2c17b0fea3e536b22db3c4957eabc022bb289201
+Author: knishita@centos6.localhost <hiroton9@gmail.com>
+Date:   Wed May 27 21:24:02 2015 +0900
+
+    test
+
+ js2.js |    1 +
+ js3.js |    2 ++
+ 2 files changed, 3 insertions(+), 0 deletions(-)
+
+commit aa1e616f14f71841f6c10f1b6760941e29be71f3
+Author: knishita@centos6.localhost <hiroton9@gmail.com>
+Date:   Tue May 26 18:46:50 2015 +0900
+
+    DOM
+
+ js1.html |   17 +++++++++++++++++
+ js2.js   |   10 ++++++++++
+ 2 files changed, 27 insertions(+), 0 deletions(-)
+
+
+■コミットの差異
+
+$ git log -p -2
+commit 2c17b0fea3e536b22db3c4957eabc022bb289201
+Author: knishita@centos6.localhost <hiroton9@gmail.com>
+Date:   Wed May 27 21:24:02 2015 +0900
+
+    test
+
+diff --git a/js2.js b/js2.js
+index 95884c6..95a0c4d 100644
+--- a/js2.js
++++ b/js2.js
+@@ -1,3 +1,4 @@
++111111
+ function printMsg() {
+         alert("Hello!");
+ }
+diff --git a/js3.js b/js3.js
+new file mode 100644
+index 0000000..cdfc83c
+--- /dev/null
++++ b/js3.js
+@@ -0,0 +1,2 @@
++aaa
++
+
+
+-----------------------------
+-- 操作ログ
+-----------------------------
+$ git reflog
+86eeef9 HEAD@{0}: commit: modify add1920
+4692bdc HEAD@{1}: commit (amend): Delete amend test
+41a1a00 HEAD@{2}: commit: amend test
+92f2a5c HEAD@{3}: checkout: moving from new-note to 92f2a5cdfddd345500dbdc056cfd210d63bdecdd
+
+
+-----------------------------
+-- rebaseでコミット統合
+-----------------------------
+$ git log --oneline
+
+ea96f5c add_file7
+d791928 add_file6
+0eb342d add_file5
+8e547ed いろいろ修正しました
+44e298b new_branch に file3を追加
+
+$ git rebase -i 8e547ed
+
+      1 pick 0eb342d add_file5?
+      2 pick d791928 add_file6?
+      3 pick ea96f5c add_file7?
+      4 ?
+      5 # Rebase 8e547ed..ea96f5c onto 8e547ed?
+
+[pick]  　何もしない
+[reword]　（コミットを採用するが、コミットメッセージを変更）コミットメッセージの書き換え
+[edit]  　（コミットを採用するが、ファイルを修正する）そのコミット時点のファイルの編集ができる。※その後のコミットで書き換えたファイルは修正するとややこしい
+[squash]　（一個前のコミットと合体させる）直前のコミットと指定したコミットを統合する。（ファイルの変更はない）
+
+----------------------------
+[reword]
+----------------------------
+      1 pick 0eb342d add_file5?
+      2 reword d791928 add_file6?　<------------- このコミットだけ[reword]してみる
+      3 pick ea96f5c add_file7?
+
+すると、コミット編集のVIMが立ち上がるので修正して保存。
+
+      1 add_file6?
+      2 ?
+      3 # Please enter the commit message for your changes. Lines starting?
+
+
+$ git log --oneline
+ac0d5d7 add_file7
+78dd8a5 add_file6 元の コミット変更します！！
+0eb342d add_file5
+8e547ed いろいろ修正しました
+44e298b new_branch に file3を追加
+
+----------------------------
+[squash]
+----------------------------
+$ git rebase -i 7e7ccbb
+
+      1 pick a61868e add_file5　修正！！?
+      2 squash fb23ceb add_file6 元の コミット変更します！！ さらに変更します。。。?
+      3 pick edc7e5c add_file7 修正！！?
+
+(以下のコミットログメッセージ編集が表示）
+
+      1 # This is a combination of 2 commits.?
+      2 # The first commit's message is:?
+      3 ?
+      4 add_file5　修正！！?
+      5 ?
+      6 # This is the 2nd commit message:?
+      7 ?
+      8 add_file6 元の?
+      9 コミット変更します！！?
+     10 さらに変更します。。。?
+
+$ git log --oneline
+58d0a75 add_file7 修正！！
+c697213 add_file5　修正！！　　　<-------- add_file6のコミットログが ５ に統合された
+7e7ccbb いろいろ修正しました [コミットログの修正]
+
+
+$ git log
+commit 58d0a752ef538facdb0802389e72f032f6567674
+Author: knishita@centos6.localhost <hiroton9@gmail.com>
+Date:   Fri May 15 21:11:33 2015 +0900
+
+    add_file7 修正！！
+
+commit c69721323780761f29ed6b4fa377793f43d0df6a　　　　　　　　　<-------- add_file6のコミットログが ５ に統合された
+Author: knishita@centos6.localhost <hiroton9@gmail.com>
+Date:   Fri May 15 21:10:02 2015 +0900
+
+    add_file5　修正！！
+    
+    add_file6 元の
+    コミット変更します！！
+    さらに変更します。。。
+
+----------------------------
+[edit]
+----------------------------
+
+$ git rebase -i 7e7ccbb
+
+      1 edit c697213 add_file5　修正！！?       <-----このコミット時の状態で、ファイルを修正や追加したいならここでedit (このコミット後に変更したファイルを修正するのはご法度！！）
+      2 pick 58d0a75 add_file7 修正！！?
+
+
+You can amend the commit now, with
+
+    git commit --amend　　　　　　　　　　　　　<----- 直前のコミットをやり直し。例えばファイルを追加したいとかあったら、add してamendする。
+
+Once you are satisfied with your changes, run
+
+    git rebase --continue　　　　　　　　　　　　<---- 修正に満足したら、rebaseを続ける。これをやるまでrebase実行されたままになるので必ず実行する。
+
+
+■ 実行後は新規ブランチにて、edit　で指定したコミットの状態になっている。
+$ git branch -a
+* (no branch)
+  master
+  new_branch1
+  remotes/origin/master
+  remotes/origin/new_branch1
+
+■ ファイルを追加して、ファイル６を修正してみる。
+
+$ git status
+
+# Not currently on any branch.
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#    new file:   add_file6.2.txt
+#
+# Changed but not updated:
+#   (use "git add <file>..." to update what will be committed)
+#   (use "git checkout -- <file>..." to discard changes in working directory)
+#
+#    modified:   add_file6.txt
+#
+
+■ コミット修正を反映させる！
+
+$ git commit --amend -a              <------------ 修正したら -a をつけること！！！！！！つけないと、↓みたいになる。。
+
+ add_file5　修正！！
+ 3 files changed, 8 insertions(+), 0 deletions(-)
+ create mode 100644 add_file5.txt
+ create mode 100644 add_file6.2.txt
+ create mode 100644 add_file6.txt
+
+■ 反映させたらrebaseをコンティニューする
+
+$ git rebase --continue
+
+add_file6.txt: needs update
+Working tree is dirty
+
+（恐らく ７番ファイルのコミット時と、さっきの状態のファイル６で変更が生じているのでコンフリクトしている・・・）
+
+$ git diff
+diff --git a/add_file6.txt b/add_file6.txt
+index 173af32..b7e67eb 100644
+--- a/add_file6.txt
++++ b/add_file6.txt
+@@ -1,3 +1,3 @@
+ ファイル６追加
+ です
+-
++さらに修正しましたーーー
+
+（いったんコミットしてから・・・）
+$ git commit -a -m "add_file6.txt修正のコミット"
+
+
+（りべーす続行）
+$ git rebase --continue
+Successfully rebased and updated refs/heads/new_branch1.
+
+
+$ git log --oneline
+590b25f add_file7 修正！！
+60e3973 add_file6.txt修正のコミット
+ca14aa7 add_file5　修正！！
+
+
+
+----------------------------------------------------------------------------------------------------------------
+
+rebaseに失敗したときの戻し方（git rebase --abort）
+http://d.hatena.ne.jp/mrgoofy33/20100910/1284069468
+
+----------------------------------------------------------------------------------------------------------------
+$ git rebase -i 8e547ed
+
+      1 reword 0eb342d add_file5?    <---------------- ※※最新のこれをsquashしてしまうとcheckout時点の新しいブランチが作成されてそこに移る。
+      2 pick d791928 add_file6?
+      3 pick ea96f5c add_file7?
+      4 ?
+
+Cannot 'squash' without a previous commit
+
+$ git branch -a
+* (no branch)                      <---------------- ※※新しいブランチが・・・・・
+  master
+  new_branch1
+  remotes/origin/master
+  remotes/origin/new_branch1
+
+$ git log --oneline                <---------------- ※※git logが  8e547ed に・・・・(no branch) で、修正ファイルもなくなった。。
+7e7ccbb いろいろ修正しました [コミットログの修正]
+44e298b new_branch に file3を追加
+5d48ea1 new_branch1にてREADME.mdを修正
+67a1896 new_branch に add_file2を追加
+
+
+（ここからrebaseを戻す方法）
+
+① --abortでrebase取り消し
+git rebase --abort
+
+（ここからcommitを取り消す方法)
+直前にしたコミットをやり直す（git commit --amend）
+
+$ git log --oneline
+edc7e5c add_file7 修正！！
+
+[knishita@centos6 test2]$ git checkout new_branch1
+Previous HEAD position was 7e7ccbb... いろいろ修正しました [コミットログの修正]  <---------------- HEADのpositionが(7e7ccbb)のコミットまで移ってしまっている！
+Switched to branch 'new_branch1'
+
+reflogして過去の変更履歴を見つつ reset --hard でHEAD@{数値}で以下のように指定する方法もあります。
+
+$ git reflog
+edc7e5c HEAD@{0}: checkout: moving from 7e7ccbb033152619c69eabe48b9cb7aff90209ff to new_branch1
+7e7ccbb HEAD@{1}: checkout: moving from new_branch1 to 7e7ccbb033152619c69eabe48b9cb7aff90209ff ＜＜＜＝＝＝＝ここがrebaseした地点
+edc7e5c HEAD@{2}: commit: add_file7 修正！！  　　　　　＜＜＜＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝ここがrebase前なのでここを指定
+fb23ceb HEAD@{3}: commit: add_file6 元の
+a61868e HEAD@{4}: commit: add_file5　修正！！
+7e7ccbb HEAD@{5}: commit (amend): いろいろ修正しました [コミットログの修正]
+8e547ed HEAD@{6}: cherry-pick
+44e298b HEAD@{7}: checkout: moving from new_branch1 to 44e298b
+00bba51 HEAD@{8}: commit (amend): add_file7 修正！！
+
+$  git reset --hard HEAD@{2}
+HEAD is now at edc7e5c add_file7 修正！！
+
+(戻った！！)
+
+$ git log --oneline
+edc7e5c add_file7 修正！！
+fb23ceb add_file6 元の コミット変更します！！ さらに変更します。。。
+a61868e add_file5　修正！！
+7e7ccbb いろいろ修正しました [コミットログの修正]
+
+
+
+----------------------------------------------------------------------------------------------------------------
+
+すでにpushしてしまったコミットログを削除する方法
+http://qiita.com/rikiMuneoka@github/items/74ee3274c3f218511a0c
+
+----------------------------------------------------------------------------------------------------------------
+$ git branch
+* master
+  new_branch1
+
+
+$ git log --oneline
+6e0376d Merge pull request #3 from hiroton9/new_branch1
+■985f7cf modify add_file8.txt
+■a4d4d55 new_branch2からadd_file8を追加してadd_file7を修正
+b1732bc new_branch1のREADME.mdをマージ                        <----------- この時点に戻す。
+531646b README.mdwo を修正しました
+7277c81 Merge pull request #1 from hiroton9/new_branch2
+c933a83 add_file9.txtを追加
+■83125a2 modify add_file8.txt
+■b54f82a new_branch2からadd_file8を追加してadd_file7を修正
+60c3272 Merge remote branch 'remotes/origin/new_branch1' into new_branch1
+ee36411 add_file7 修正！！
+16cee40 add_file5　修正！！
+bda3000 いろいろ修正しました [コミットログの修正]
+d73aea7 new_branch に file3を追加 さらにfile13.1も追加
+8e547ed いろいろ修正しました
+44e298b new_branch に file3を追加
+5d48ea1 new_branch1にてREADME.mdを修正
+67a1896 new_branch に add_file2を追加
+e3463a3 new_branch に add_fileを追加
+55fb28a first commit
+
+$ git reset --hard b1732bc
+HEAD is now at b1732bc new_branch1のREADME.mdをマージ
+
+
+$ git log --oneline
+b1732bc new_branch1のREADME.mdをマージ
+531646b README.mdwo を修正しました
+c933a83 add_file9.txtを追加
+60c3272 Merge remote branch 'remotes/origin/new_branch1' into new_branch1
+
+
+-----------------------------
+-- 直前のコミット以外のコミットメッセージを修正する方法
+-----------------------------
+$ git rebase -i HEAD~2
+pick 4692bdc Delete amend test      → reword 4692bdc Delete amend test
+pick 86eeef9 modify add1920         → reword 86eeef9 modify add1920
+                                    
+→pickは何もしない
+→rewordにすると一つずつコミットメッセージを書き換えれる
+A　→変えたいものをrewordにすると、変えたいログのものを書き換えるエディタが立ち上がる
+→edit
+　→指定したコミットまでの情報まで遡る。
+　→これはコミットを分割したい時などに利用する
+　→要はそのコミット時点のファイルの編集ができる。
+　　→ただし、そのあとに変更したファイルなどを書き換えるとまずいかも。。。
+　　→修正したらcommitして、rebaseをcontinueする
+        git commit --amend
+        git rebase --continue
+　→rebaseを続行させてファイルの競合が起きてしまった時の対応
+　　※基本的にはCOMMITしているファイルは修正しない方がいい。競合してしまうので。abortするしかない。。
+　　When you have resolved this problem run "git rebase --continue".
+　　　　→競合したファイルを解決してcontinueを続ける
+　　　　→git statusでどういったことが起きているのかを確認できる
+　　　　→git diffで現時点と競合が起きてしまったファイルの差異を確認できる
+　　　　→修正したファイル（both)なら修正してaddすればcommitが続行できる
+　　　　→もしrebaseを誤ってrebasaとしてしまったときは、
+　　　　　/home/owner/git/hiroton9/note/.git/rebase-merge/git-rebase-todo
+　　　　　↑にファイルがあるのでそれを編集してcontinueすればよい
+　　If you would prefer to skip this patch, instead run "git rebase --skip".
+　　　　→競合が起きたcommitをskipして次のcommitのrebaseを続ける
+　　To check out the original branch and stop rebasing run "git rebase --abort".
+　　　　→新しいbranchを作成してこの時点でrebaseを止める
+　　　　→書き換えた後は(no branch)になるのでamendすると、元のbranchになる
+　　　　　git commit --amend
+
+→squash
+　→直前のコミットと指定したコミットを統合する。（ファイルの変更はない）
+　→これは複数のコミットを統合するときなどに利用する
+　→要はそのコミット事態の操作を一緒にする
+　-----------------------------------------------------
+　# The first commit's message is:
+　　commit 4 move move5->6
+　# This is the 2nd commit message:
+　　commit 6 move move6->7
+　# Changes to be committed:
+　#       renamed:    move5.txt -> move7.txt
+　-----------------------------------------------------
+　→→ move5.txtがmove7.txtになる。
+　→→ commit 4　の move5.txt が move6.txtになった時の修正が取り消される？もしくはそこもマージしてもらえる？
+
+-----------------------------
+-- コミット事態の修正
+-----------------------------
+「git reset --soft」 → ワークディレクトリの内容はそのままでコミットだけを取り消す。
+「git reset --hard」 → コミット取り消した上でワークディレクトリの内容も書き換える。
+「git reset --soft HEAD^」の「HEAD^」はひとつ前のコミットの意味
+
+
+
