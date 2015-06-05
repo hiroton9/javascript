@@ -1,0 +1,14 @@
+<html>
+<head>
+<title>Smartyのテスト</title>
+</head>
+<body>
+{assign var="foo" value='C:\xampp\htdocs\smarty_test\templates\include.tpl'}
+{if file_exists($foo) }
+{include file="$foo"}
+{else}
+ファイルがありません
+{/if}
+{$foo}
+</body>
+</html>
